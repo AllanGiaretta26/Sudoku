@@ -1,0 +1,32 @@
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+
+# Ignore build outputs in submodules
+**/build/
+out/
+bin/
+
+# Ignore IDE/editor files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+*.swp
+
+# Ignore local game save files
+saves/
+
+# Ignore documentation files
+docs/
