@@ -83,6 +83,9 @@ No terminal, na raiz do projeto:
 .\gradlew.bat run
 ```
 
+## Autor
+Desenvolvido por Allan Giaretta.
+
 Para executar testes:
 
 ```bash
