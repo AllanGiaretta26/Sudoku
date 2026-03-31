@@ -3,20 +3,24 @@ package sudoku.ui;
 import java.io.IOException;
 
 import sudoku.logic.Generator;
+import sudoku.logic.Solver;
 import sudoku.logic.Validador;
 import sudoku.model.Board;
+import sudoku.model.Cell;
 import sudoku.ui.ConsoleUI.Move;
 import sudoku.util.FileManager;
 
 public class GameController {
     private final ConsoleUI consoleUI;
     private final Generator generator;
+    private final Solver solver;
     private final Validador validador;
     private final FileManager fileManager;
 
     public GameController() {
         this.consoleUI = new ConsoleUI();
         this.generator = new Generator();
+        this.solver = new Solver();
         this.validador = new Validador();
         this.fileManager = new FileManager();
     }
@@ -64,6 +68,46 @@ public class GameController {
                 continue;
             }
 
+            if (move.isNewBoard()) {
+                board = generator.generate(40);
+                consoleUI.printMessage("Novo tabuleiro gerado.");
+                continue;
+            }
+
+            if (move.isStatus()) {
+                consoleUI.printMessage("Status da partida: " + getGameStatus(board));
+                continue;
+            }
+
+            if (move.isComplete()) {
+                Board solvedCandidate = copyBoard(board);
+                if (solver.solve(solvedCandidate)) {
+                    board = solvedCandidate;
+                    consoleUI.printMessage("Tabuleiro completado automaticamente.");
+                } else {
+                    consoleUI.printMessage("Nao foi possivel completar o tabuleiro atual.");
+                }
+                continue;
+            }
+
+            if (move.isRemove()) {
+                int row = move.getRow();
+                int col = move.getCol();
+                if (board.getCell(row, col).isFixed()) {
+                    consoleUI.printMessage("Jogada errada para as regras Sudoku.");
+                    continue;
+                }
+                board.setValue(row, col, 0);
+                consoleUI.printMessage("Numero removido da posicao.");
+                continue;
+            }
+
+            if (move.isClear()) {
+                clearAllUserMoves(board);
+                consoleUI.printMessage("Todos os numeros digitados pelo usuario foram removidos.");
+                continue;
+            }
+
             int row = move.getRow();
             int col = move.getCol();
             int value = move.getValue();
@@ -73,26 +117,9 @@ public class GameController {
                 continue;
             }
 
-            int previousValue = board.getCell(row, col).getValue();
             board.setValue(row, col, value);
-
-            if (!isMoveValid(board, row, col)) {
-                board.setValue(row, col, previousValue);
-                consoleUI.printMessage("Jogada invalida para as regras do Sudoku.");
-                continue;
-            }
-
             consoleUI.printMessage("Jogada aplicada.");
         }
-    }
-
-    private boolean isMoveValid(Board board, int row, int col) {
-        int boxRow = row - (row % 3);
-        int boxCol = col - (col % 3);
-
-        return validador.isValidRow(board, row)
-            && validador.isValidColumn(board, col)
-            && validador.isValidBox(board, boxRow, boxCol);
     }
 
     private boolean isVictory(Board board) {
@@ -121,11 +148,44 @@ public class GameController {
         return true;
     }
 
+    private String getGameStatus(Board board) {
+        if (board == null) {
+            return "NAO_INICIADO";
+        }
+        return isVictory(board) ? "COMPLETO" : "INCOMPLETO";
+    }
+
+    private Board copyBoard(Board board) {
+        Cell[][] cells = new Cell[9][9];
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                Cell source = board.getCell(row, col);
+                cells[row][col] = new Cell(source.getValue(), source.isFixed());
+            }
+        }
+        return new Board(cells);
+    }
+
+    private void clearAllUserMoves(Board board) {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (!board.getCell(row, col).isFixed()) {
+                    board.setValue(row, col, 0);
+                }
+            }
+        }
+    }
+
     private void printHelp() {
         consoleUI.printMessage("Comandos disponiveis:");
         consoleUI.printMessage("- linha coluna valor  -> ex: 1 3 9");
+        consoleUI.printMessage("- remove linha coluna -> remove numero da posicao (se nao fixa)");
+        consoleUI.printMessage("- clear               -> remove todos os numeros digitados pelo usuario");
         consoleUI.printMessage("- save arquivo.txt    -> salva a partida");
         consoleUI.printMessage("- load arquivo.txt    -> carrega uma partida");
+        consoleUI.printMessage("- new                 -> gera um novo tabuleiro aleatorio");
+        consoleUI.printMessage("- status              -> mostra o status da partida");
+        consoleUI.printMessage("- complete            -> completa automaticamente o tabuleiro");
         consoleUI.printMessage("- help                -> mostra esta ajuda");
         consoleUI.printMessage("- q                   -> encerra o jogo");
     }

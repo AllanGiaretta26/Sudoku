@@ -39,7 +39,7 @@ public class ConsoleUI {
 
     public Move readMove() {
         while (true) {
-            System.out.print("Comando (linha coluna valor | save arquivo.txt | load arquivo.txt | help | q): ");
+            System.out.print("Comando (linha coluna valor | remove linha coluna | clear | save arquivo.txt | load arquivo.txt | new | status | complete | help | q): ");
             String input = scanner.nextLine().trim();
 
             if (input.equalsIgnoreCase("q")) {
@@ -48,6 +48,22 @@ public class ConsoleUI {
 
             if (input.equalsIgnoreCase("help")) {
                 return Move.help();
+            }
+
+            if (input.equalsIgnoreCase("new")) {
+                return Move.newBoard();
+            }
+
+            if (input.equalsIgnoreCase("status")) {
+                return Move.status();
+            }
+
+            if (input.equalsIgnoreCase("complete")) {
+                return Move.complete();
+            }
+
+            if (input.equalsIgnoreCase("clear")) {
+                return Move.clearUserMoves();
             }
 
             if (input.toLowerCase().startsWith("save ")) {
@@ -68,9 +84,29 @@ public class ConsoleUI {
                 return Move.load(filePath);
             }
 
+            if (input.toLowerCase().startsWith("remove ")) {
+                String[] parts = input.split("\\s+");
+                if (parts.length != 3) {
+                    printMessage("Jogada errada para as regras Sudoku.");
+                    continue;
+                }
+                try {
+                    int row = Integer.parseInt(parts[1]);
+                    int col = Integer.parseInt(parts[2]);
+                    if (row < 1 || row > 9 || col < 1 || col > 9) {
+                        printMessage("Jogada errada para as regras Sudoku.");
+                        continue;
+                    }
+                    return Move.remove(row - 1, col - 1);
+                } catch (NumberFormatException exception) {
+                    printMessage("Jogada errada para as regras Sudoku.");
+                    continue;
+                }
+            }
+
             String[] parts = input.split("\\s+");
             if (parts.length != 3) {
-                printMessage("Entrada invalida. Use jogada, save, load, help ou q.");
+                printMessage("Jogada errada para as regras Sudoku.");
                 continue;
             }
 
@@ -80,13 +116,13 @@ public class ConsoleUI {
                 int value = Integer.parseInt(parts[2]);
 
                 if (row < 1 || row > 9 || col < 1 || col > 9 || value < 0 || value > 9) {
-                    printMessage("Valores permitidos: linha 1-9, coluna 1-9, valor 0-9.");
+                    printMessage("Jogada errada para as regras Sudoku.");
                     continue;
                 }
 
                 return Move.play(row - 1, col - 1, value);
             } catch (NumberFormatException exception) {
-                printMessage("Entrada invalida. Digite apenas numeros ou 'q'.");
+                printMessage("Jogada errada para as regras Sudoku.");
             }
         }
     }
@@ -128,6 +164,26 @@ public class ConsoleUI {
             return new Move(CommandType.HELP, false, -1, -1, -1, null);
         }
 
+        public static Move newBoard() {
+            return new Move(CommandType.NEW_BOARD, false, -1, -1, -1, null);
+        }
+
+        public static Move status() {
+            return new Move(CommandType.STATUS, false, -1, -1, -1, null);
+        }
+
+        public static Move complete() {
+            return new Move(CommandType.COMPLETE, false, -1, -1, -1, null);
+        }
+
+        public static Move remove(int row, int col) {
+            return new Move(CommandType.REMOVE, false, row, col, 0, null);
+        }
+
+        public static Move clearUserMoves() {
+            return new Move(CommandType.CLEAR, false, -1, -1, -1, null);
+        }
+
         public boolean isQuit() {
             return quit;
         }
@@ -142,6 +198,26 @@ public class ConsoleUI {
 
         public boolean isHelp() {
             return type == CommandType.HELP;
+        }
+
+        public boolean isNewBoard() {
+            return type == CommandType.NEW_BOARD;
+        }
+
+        public boolean isStatus() {
+            return type == CommandType.STATUS;
+        }
+
+        public boolean isComplete() {
+            return type == CommandType.COMPLETE;
+        }
+
+        public boolean isRemove() {
+            return type == CommandType.REMOVE;
+        }
+
+        public boolean isClear() {
+            return type == CommandType.CLEAR;
         }
 
         public int getRow() {
@@ -165,6 +241,11 @@ public class ConsoleUI {
         PLAY,
         SAVE,
         LOAD,
+        NEW_BOARD,
+        STATUS,
+        COMPLETE,
+        REMOVE,
+        CLEAR,
         HELP,
         QUIT
     }
