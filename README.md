@@ -82,12 +82,12 @@ No terminal, na raiz do projeto:
 ```bash
 .\gradlew.bat run
 ```
-
-## Autor
-Desenvolvido por Allan Giaretta.
-
 Para executar testes:
 
 ```bash
 .\gradlew.bat test
 ```
+
+## Autor
+Desenvolvido por Allan Giaretta.
+
