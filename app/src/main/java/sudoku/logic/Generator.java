@@ -10,6 +10,9 @@ import java.util.HashMap;
 
 import sudoku.model.Board;
 
+/**
+ * Gera tabuleiros de Sudoku validos com nivel basico de aleatoriedade.
+ */
 public class Generator {
     private final Solver solver;
     private final Random random;
@@ -23,6 +26,10 @@ public class Generator {
         return generate(40);
     }
 
+    /**
+     * Gera um tabuleiro resolvido, aplica randomizacao estrutural
+     * e remove celulas para formar o puzzle inicial.
+     */
     public Board generate(int cellsToRemove) {
         if (cellsToRemove < 0 || cellsToRemove > 81) {
             throw new IllegalArgumentException("cellsToRemove must be between 0 and 81.");
@@ -41,6 +48,7 @@ public class Generator {
         shuffleColumnsWithinStacks(board);
     }
 
+    // Permutacao de simbolos preserva validade do Sudoku.
     private void applyRandomDigitMapping(Board board) {
         List<Integer> digits = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9));
         Collections.shuffle(digits, random);

@@ -10,6 +10,10 @@ import sudoku.model.Cell;
 import sudoku.ui.ConsoleUI.Move;
 import sudoku.util.FileManager;
 
+/**
+ * Orquestra o ciclo principal do jogo, conectando UI, geracao,
+ * validacao, persistencia e regras de partida.
+ */
 public class GameController {
     private final ConsoleUI consoleUI;
     private final Generator generator;
@@ -25,6 +29,9 @@ public class GameController {
         this.fileManager = new FileManager();
     }
 
+    /**
+     * Loop principal da aplicacao em modo console.
+     */
     public void run() {
         Board board = generator.generate(40);
         consoleUI.printMessage("Sudoku iniciado. Digite 'help' para ver os comandos.");
@@ -153,6 +160,9 @@ public class GameController {
         return true;
     }
 
+    /**
+     * Retorna o status da partida para exibicao ao usuario.
+     */
     private String getGameStatus(Board board) {
         if (board == null) {
             return "NAO_INICIADO";
@@ -171,6 +181,9 @@ public class GameController {
         return new Board(cells);
     }
 
+    /**
+     * Limpa apenas valores inseridos pelo usuario, preservando as celulas fixas.
+     */
     private void clearAllUserMoves(Board board) {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
@@ -181,6 +194,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Verifica repeticao de valor apenas na linha e coluna da jogada atual.
+     */
     private boolean hasDuplicateInRowOrColumn(Board board, int targetRow, int targetCol, int value) {
         for (int col = 0; col < 9; col++) {
             if (col != targetCol && board.getCell(targetRow, col).getValue() == value) {

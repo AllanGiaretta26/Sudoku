@@ -2,6 +2,9 @@ package sudoku.logic;
 
 import sudoku.model.Board;
 
+/**
+ * Resolve um tabuleiro de Sudoku usando backtracking.
+ */
 public class Solver {
     private final Validador validador;
 

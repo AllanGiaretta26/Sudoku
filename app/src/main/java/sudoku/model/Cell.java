@@ -1,5 +1,9 @@
 package sudoku.model;
 
+/**
+ * Entidade de celula do Sudoku.
+ * value=0 representa celula vazia.
+ */
 public class Cell {
     private int value = 0;
     private boolean fixed = false;

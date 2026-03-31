@@ -2,6 +2,9 @@ package sudoku.logic;
 
 import sudoku.model.Board;
 
+/**
+ * Centraliza validacoes de regras de Sudoku para linha, coluna e caixa 3x3.
+ */
 public class Validador {
     
     public boolean isValidRow(Board board, int row){

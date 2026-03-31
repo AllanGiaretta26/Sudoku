@@ -4,6 +4,10 @@ import java.util.Scanner;
 
 import sudoku.model.Board;
 
+/**
+ * Camada de entrada e saida em console.
+ * Converte texto digitado em comandos estruturados para o controlador.
+ */
 public class ConsoleUI {
     private final Scanner scanner;
 
@@ -11,6 +15,9 @@ public class ConsoleUI {
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Exibe o tabuleiro no formato 9x9 com separadores visuais.
+     */
     public void printBoard(Board board) {
         System.out.println();
         System.out.println("    1 2 3   4 5 6   7 8 9");
@@ -37,6 +44,9 @@ public class ConsoleUI {
         System.out.println(message);
     }
 
+    /**
+     * Le o comando do usuario e retorna um objeto de movimento/acao validado.
+     */
     public Move readMove() {
         while (true) {
             System.out.print("Comando (linha coluna valor | remove linha coluna | clear | save arquivo.txt | load arquivo.txt | new | status | complete | help | q): ");
@@ -127,6 +137,9 @@ public class ConsoleUI {
         }
     }
 
+    /**
+     * Representa uma acao de jogo ja interpretada pelo parser de comandos.
+     */
     public static class Move {
         private final CommandType type;
         private final boolean quit;

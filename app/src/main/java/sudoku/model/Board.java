@@ -1,5 +1,8 @@
 package sudoku.model;
 
+/**
+ * Representa o estado completo do tabuleiro 9x9.
+ */
 public class Board {
     private Cell[][] cell;
 
