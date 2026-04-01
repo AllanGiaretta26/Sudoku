@@ -48,14 +48,14 @@ public class Board {
     }
 
     public String printBoard(){
-        String board = "";
+        StringBuilder board = new StringBuilder();
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
-                board += this.cell[i][j].getValue() + " ";
+                board.append(this.cell[i][j].getValue()).append(" ");
             }
-            board += "\n";
+            board.append("\n");
         }
-        return board;
+        return board.toString();
     }
 
     private void validateIndices(int row, int col) {

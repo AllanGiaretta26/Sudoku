@@ -3,6 +3,7 @@ package sudoku.ui;
 import java.util.Scanner;
 
 import sudoku.model.Board;
+import sudoku.util.CommandTypeEnum;
 
 /**
  * Camada de entrada e saida em console.
@@ -10,6 +11,8 @@ import sudoku.model.Board;
  */
 public class ConsoleUI {
     private final Scanner scanner;
+
+    private static final String INVALID_MOVE_MESSAGE = "Jogada errada para as regras Sudoku.";
 
     public ConsoleUI() {
         this.scanner = new Scanner(System.in);
@@ -97,26 +100,26 @@ public class ConsoleUI {
             if (input.toLowerCase().startsWith("remove ")) {
                 String[] parts = input.split("\\s+");
                 if (parts.length != 3) {
-                    printMessage("Jogada errada para as regras Sudoku.");
+                    printMessage(INVALID_MOVE_MESSAGE);
                     continue;
                 }
                 try {
                     int row = Integer.parseInt(parts[1]);
                     int col = Integer.parseInt(parts[2]);
                     if (row < 1 || row > 9 || col < 1 || col > 9) {
-                        printMessage("Jogada errada para as regras Sudoku.");
+                        printMessage(INVALID_MOVE_MESSAGE);
                         continue;
                     }
                     return Move.remove(row - 1, col - 1);
                 } catch (NumberFormatException exception) {
-                    printMessage("Jogada errada para as regras Sudoku.");
+                    printMessage(INVALID_MOVE_MESSAGE);
                     continue;
                 }
             }
 
             String[] parts = input.split("\\s+");
             if (parts.length != 3) {
-                printMessage("Jogada errada para as regras Sudoku.");
+                printMessage(INVALID_MOVE_MESSAGE);
                 continue;
             }
 
@@ -126,13 +129,13 @@ public class ConsoleUI {
                 int value = Integer.parseInt(parts[2]);
 
                 if (row < 1 || row > 9 || col < 1 || col > 9 || value < 0 || value > 9) {
-                    printMessage("Jogada errada para as regras Sudoku.");
+                    printMessage(INVALID_MOVE_MESSAGE);
                     continue;
                 }
 
                 return Move.play(row - 1, col - 1, value);
             } catch (NumberFormatException exception) {
-                printMessage("Jogada errada para as regras Sudoku.");
+                printMessage(INVALID_MOVE_MESSAGE);
             }
         }
     }
@@ -141,14 +144,14 @@ public class ConsoleUI {
      * Representa uma acao de jogo ja interpretada pelo parser de comandos.
      */
     public static class Move {
-        private final CommandType type;
+        private final CommandTypeEnum type;
         private final boolean quit;
         private final int row;
         private final int col;
         private final int value;
         private final String filePath;
 
-        private Move(CommandType type, boolean quit, int row, int col, int value, String filePath) {
+        private Move(CommandTypeEnum type, boolean quit, int row, int col, int value, String filePath) {
             this.type = type;
             this.quit = quit;
             this.row = row;
@@ -158,43 +161,43 @@ public class ConsoleUI {
         }
 
         public static Move quit() {
-            return new Move(CommandType.QUIT, true, -1, -1, -1, null);
+            return new Move(CommandTypeEnum.QUIT, true, -1, -1, -1, null);
         }
 
         public static Move play(int row, int col, int value) {
-            return new Move(CommandType.PLAY, false, row, col, value, null);
+            return new Move(CommandTypeEnum.PLAY, false, row, col, value, null);
         }
 
         public static Move save(String filePath) {
-            return new Move(CommandType.SAVE, false, -1, -1, -1, filePath);
+            return new Move(CommandTypeEnum.SAVE, false, -1, -1, -1, filePath);
         }
 
         public static Move load(String filePath) {
-            return new Move(CommandType.LOAD, false, -1, -1, -1, filePath);
+            return new Move(CommandTypeEnum.LOAD, false, -1, -1, -1, filePath);
         }
 
         public static Move help() {
-            return new Move(CommandType.HELP, false, -1, -1, -1, null);
+            return new Move(CommandTypeEnum.HELP, false, -1, -1, -1, null);
         }
 
         public static Move newBoard() {
-            return new Move(CommandType.NEW_BOARD, false, -1, -1, -1, null);
+            return new Move(CommandTypeEnum.NEW_BOARD, false, -1, -1, -1, null);
         }
 
         public static Move status() {
-            return new Move(CommandType.STATUS, false, -1, -1, -1, null);
+            return new Move(CommandTypeEnum.STATUS, false, -1, -1, -1, null);
         }
 
         public static Move complete() {
-            return new Move(CommandType.COMPLETE, false, -1, -1, -1, null);
+            return new Move(CommandTypeEnum.COMPLETE, false, -1, -1, -1, null);
         }
 
         public static Move remove(int row, int col) {
-            return new Move(CommandType.REMOVE, false, row, col, 0, null);
+            return new Move(CommandTypeEnum.REMOVE, false, row, col, 0, null);
         }
 
         public static Move clearUserMoves() {
-            return new Move(CommandType.CLEAR, false, -1, -1, -1, null);
+            return new Move(CommandTypeEnum.CLEAR, false, -1, -1, -1, null);
         }
 
         public boolean isQuit() {
@@ -202,35 +205,35 @@ public class ConsoleUI {
         }
 
         public boolean isSave() {
-            return type == CommandType.SAVE;
+            return type == CommandTypeEnum.SAVE;
         }
 
         public boolean isLoad() {
-            return type == CommandType.LOAD;
+            return type == CommandTypeEnum.LOAD;
         }
 
         public boolean isHelp() {
-            return type == CommandType.HELP;
+            return type == CommandTypeEnum.HELP;
         }
 
         public boolean isNewBoard() {
-            return type == CommandType.NEW_BOARD;
+            return type == CommandTypeEnum.NEW_BOARD;
         }
 
         public boolean isStatus() {
-            return type == CommandType.STATUS;
+            return type == CommandTypeEnum.STATUS;
         }
 
         public boolean isComplete() {
-            return type == CommandType.COMPLETE;
+            return type == CommandTypeEnum.COMPLETE;
         }
 
         public boolean isRemove() {
-            return type == CommandType.REMOVE;
+            return type == CommandTypeEnum.REMOVE;
         }
 
         public boolean isClear() {
-            return type == CommandType.CLEAR;
+            return type == CommandTypeEnum.CLEAR;
         }
 
         public int getRow() {
@@ -248,18 +251,5 @@ public class ConsoleUI {
         public String getFilePath() {
             return filePath;
         }
-    }
-
-    private enum CommandType {
-        PLAY,
-        SAVE,
-        LOAD,
-        NEW_BOARD,
-        STATUS,
-        COMPLETE,
-        REMOVE,
-        CLEAR,
-        HELP,
-        QUIT
     }
 }

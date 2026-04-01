@@ -124,11 +124,6 @@ public class GameController {
                 continue;
             }
 
-            if (value != 0 && hasDuplicateInRowOrColumn(board, row, col, value)) {
-                consoleUI.printMessage("Numero ja existente na linha ou coluna.");
-                continue;
-            }
-
             board.setValue(row, col, value);
             consoleUI.printMessage("Jogada aplicada.");
         }
@@ -192,25 +187,6 @@ public class GameController {
                 }
             }
         }
-    }
-
-    /**
-     * Verifica repeticao de valor apenas na linha e coluna da jogada atual.
-     */
-    private boolean hasDuplicateInRowOrColumn(Board board, int targetRow, int targetCol, int value) {
-        for (int col = 0; col < 9; col++) {
-            if (col != targetCol && board.getCell(targetRow, col).getValue() == value) {
-                return true;
-            }
-        }
-
-        for (int row = 0; row < 9; row++) {
-            if (row != targetRow && board.getCell(row, targetCol).getValue() == value) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void printHelp() {
