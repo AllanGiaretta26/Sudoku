@@ -1,93 +1,124 @@
-# Sudoku em Java (Console)
+# 🎯 Sudoku em Java
 
-## 1) Explicacao do jogo Sudoku
+![Status](https://img.shields.io/badge/status-concluído-brightgreen)
+![Java](https://img.shields.io/badge/Java-17+-orange)
+![Gradle](https://img.shields.io/badge/Gradle-build-06A0D1?logo=gradle)
+![JUnit5](https://img.shields.io/badge/JUnit-5-25A162)
+![License](https://img.shields.io/badge/licença-MIT-lightgrey)
 
-Sudoku e um jogo de logica com um tabuleiro `9x9`, dividido em 9 caixas `3x3`.
-O objetivo e preencher as celulas vazias com numeros de `1` a `9`, sem repetir:
+> Jogo de Sudoku completo no terminal — com geração automática de puzzles, validação em tempo real e suporte a salvar e carregar partidas.
 
-- na mesma linha;
-- na mesma coluna;
-- na mesma caixa `3x3`.
+---
 
-No projeto, o valor `0` representa celula vazia.
+## 📋 Descrição
 
-## 2) Tecnologias utilizadas
+**Sudoku em Java** é uma aplicação de console que implementa o clássico jogo de lógica. O tabuleiro `9x9` é dividido em 9 blocos `3x3`, e o objetivo é preencher as células vazias com números de `1` a `9` sem repetir nenhum na mesma linha, coluna ou bloco.
 
-- **Java** (programacao orientada a objetos)
-- **Gradle** (build e execucao de testes)
-- **JUnit 5** (teste unitario basico)
-- **Console/CLI** para interacao com o usuario
-- **Java NIO (`java.nio.file`)** para salvar/carregar partidas em arquivo `.txt`
+O puzzle é gerado automaticamente a cada partida usando um algoritmo de **backtracking recursivo**. O projeto foi desenvolvido com foco em **orientação a objetos**, separando claramente as responsabilidades em camadas de modelo, lógica, interface e persistência.
 
-## 3) Estrutura do projeto 
+Internamente, o valor `0` representa uma célula vazia.
 
-```text
-app/src/
-├─ main/java/sudoku/
-│  ├─ App.java
-│  ├─ logic/
-│  │  ├─ Validador.java
-│  │  ├─ Solver.java
-│  │  └─ Generator.java
-│  ├─ model/
-│  │  ├─ Cell.java
-│  │  └─ Board.java
-│  ├─ ui/
-│  │  ├─ ConsoleUI.java
-│  │  └─ GameController.java
-│  └─ util/
-│     └─ FileManager.java
-└─ test/java/sudoku/
-   └─ AppTest.java
+---
+
+## 📌 Status do Projeto
+
+![Status](https://img.shields.io/badge/status-concluído-brightgreen)
+
+Todas as funcionalidades estão implementadas e os testes passando.
+
+---
+
+## 🛠️ Tecnologias
+
+![Java](https://img.shields.io/badge/Java-17+-orange)
+![Gradle](https://img.shields.io/badge/Gradle-06A0D1?logo=gradle)
+![JUnit5](https://img.shields.io/badge/JUnit-5-25A162)
+
+| Tecnologia | Uso |
+|---|---|
+| **Java 17+** | Linguagem principal, programação orientada a objetos |
+| **Gradle** | Build, execução da aplicação e dos testes |
+| **JUnit 5** | Testes unitários |
+| **Java NIO** (`java.nio.file`) | Leitura e escrita de partidas em arquivos `.txt` |
+| **Console / CLI** | Interface de interação com o usuário |
+
+---
+
+## 🚀 Como Instalar e Rodar
+
+### Pré-requisitos
+
+- [Java 17+](https://adoptium.net/) instalado e configurado no PATH
+- [Git](https://git-scm.com/) instalado
+
+### Instalação
+
+```bash
+# Clone o repositório
+git clone https://github.com/AllanGiaretta26/Sudoku.git
+
+# Acesse a pasta do projeto
+cd Sudoku
 ```
 
-## 4) Explicacao do codigo
-
-- **Modelo (`model`)**
-  - `Cell`: representa uma celula do tabuleiro (`value` e `fixed`).
-  - `Board`: representa a matriz `9x9` e oferece acesso/atualizacao de celulas.
-
-- **Logica (`logic`)**
-  - `Validador`: valida linha, coluna e caixa `3x3` pelas regras do Sudoku.
-  - `Solver`: resolve o Sudoku com backtracking recursivo.
-  - `Generator`: gera um tabuleiro completo e remove celulas para formar o puzzle.
-
-- **Interface e fluxo (`ui`)**
-  - `ConsoleUI`: imprime tabuleiro e le comandos do usuario.
-  - `GameController`: loop principal do jogo (entrada, validacao, atualizacao e vitoria).
-
-- **Persistencia (`util`)**
-  - `FileManager`: salva/carrega partida em arquivo `.txt` com valores e estado de celula fixa.
-
-- **Entrada da aplicacao**
-  - `App`: inicia o jogo chamando `GameController.run()`.
-
-## 5) Funcionalidades do codigo
-
-- Iniciar uma nova partida de Sudoku no console.
-- Exibir tabuleiro formatado com separacao visual das caixas `3x3`.
-- Inserir jogadas no formato: `linha coluna valor`.
-- Bloquear edicao de celulas fixas.
-- Validar jogadas conforme regras do Sudoku.
-- Detectar vitoria quando o tabuleiro estiver completo e valido.
-- Salvar partida com comando: `save arquivo.txt`.
-- Carregar partida com comando: `load arquivo.txt`.
-- Exibir ajuda com comando: `help`.
-- Encerrar jogo com comando: `q`.
-
-## Executar o projeto
-
-No terminal, na raiz do projeto:
+### Executar o jogo
 
 ```bash
 .\gradlew.bat run
 ```
-Para executar testes:
+
+### Executar os testes
 
 ```bash
 .\gradlew.bat test
 ```
 
-## Autor
-Desenvolvido por Allan Giaretta.
+---
 
+## 🎮 Como Jogar
+
+Após iniciar o jogo, o tabuleiro será exibido no terminal. Use os comandos abaixo para interagir:
+
+| Comando | Descrição | Exemplo |
+|---|---|---|
+| `linha coluna valor` | Insere um número na célula indicada | `3 5 7` |
+| `save arquivo.txt` | Salva a partida atual em um arquivo | `save minha_partida.txt` |
+| `load arquivo.txt` | Carrega uma partida salva | `load minha_partida.txt` |
+| `help` | Exibe a lista de comandos disponíveis | — |
+| `q` | Encerra o jogo | — |
+
+> **Atenção:** células fixas (do puzzle original) não podem ser alteradas. O jogo detecta automaticamente a vitória quando o tabuleiro é preenchido corretamente.
+
+---
+
+## 📁 Estrutura do Projeto
+
+```text
+app/src/
+├─ main/java/sudoku/
+│  ├─ App.java                  ← Ponto de entrada — inicia o GameController
+│  ├─ logic/
+│  │  ├─ Validador.java         ← Valida linha, coluna e bloco 3x3
+│  │  ├─ Solver.java            ← Resolve o puzzle via backtracking recursivo
+│  │  └─ Generator.java         ← Gera tabuleiro completo e remove células
+│  ├─ model/
+│  │  ├─ Cell.java              ← Célula com valor e flag de fixo
+│  │  └─ Board.java             ← Matriz 9x9 com acesso e atualização
+│  ├─ ui/
+│  │  ├─ ConsoleUI.java         ← Renderiza o tabuleiro e lê comandos
+│  │  └─ GameController.java    ← Loop principal: entrada, validação e vitória
+│  └─ util/
+│     └─ FileManager.java       ← Salva e carrega partidas em arquivo .txt
+└─ test/java/sudoku/
+   └─ AppTest.java
+```
+
+---
+
+## 📄 Licença
+
+Distribuído sob a licença [MIT](./LICENSE).
+
+---
+
+Desenvolvido por **Allan Giaretta**.
