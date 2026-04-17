@@ -219,25 +219,12 @@ public class ConsoleUI implements AutoCloseable {
         /** Tipo do comando, classificado pelo enum {@link CommandTypeEnum}. */
         private final CommandTypeEnum type;
 
-        /** Indica se o comando encerra o loop principal. */
         private final boolean quit;
-
-        /** Linha da jogada (0-indexada) ou {@code -1} quando não aplicável. */
         private final int row;
-
-        /** Coluna da jogada (0-indexada) ou {@code -1} quando não aplicável. */
         private final int col;
-
-        /** Valor da jogada (0–9) ou {@code -1} quando não aplicável. */
         private final int value;
-
-        /** Caminho de arquivo para comandos de persistência, ou {@code null}. */
         private final String filePath;
 
-        /**
-         * Construtor privado — use as fábricas estáticas {@link #play(int, int, int)},
-         * {@link #save(String)}, etc.
-         */
         private Move(CommandTypeEnum type, boolean quit, int row, int col, int value, String filePath) {
             this.type = type;
             this.quit = quit;
@@ -247,7 +234,7 @@ public class ConsoleUI implements AutoCloseable {
             this.filePath = filePath;
         }
 
-        /** @return movimento que encerra o jogo. */
+        /** Cria um movimento do tipo QUIT. */
         public static Move quit() {
             return new Move(CommandTypeEnum.QUIT, true, -1, -1, -1, null);
         }
@@ -258,7 +245,6 @@ public class ConsoleUI implements AutoCloseable {
          * @param row   linha (0–8)
          * @param col   coluna (0–8)
          * @param value valor a ser inserido (0–9)
-         * @return movimento do tipo PLAY
          */
         public static Move play(int row, int col, int value) {
             return new Move(CommandTypeEnum.PLAY, false, row, col, value, null);
@@ -268,7 +254,6 @@ public class ConsoleUI implements AutoCloseable {
          * Cria um comando para salvar a partida em arquivo.
          *
          * @param filePath caminho do arquivo destino
-         * @return movimento do tipo SAVE
          */
         public static Move save(String filePath) {
             return new Move(CommandTypeEnum.SAVE, false, -1, -1, -1, filePath);
@@ -278,28 +263,27 @@ public class ConsoleUI implements AutoCloseable {
          * Cria um comando para carregar uma partida de arquivo.
          *
          * @param filePath caminho do arquivo origem
-         * @return movimento do tipo LOAD
          */
         public static Move load(String filePath) {
             return new Move(CommandTypeEnum.LOAD, false, -1, -1, -1, filePath);
         }
 
-        /** @return movimento que solicita a exibição da ajuda. */
+        /** Cria um movimento do tipo HELP. */
         public static Move help() {
             return new Move(CommandTypeEnum.HELP, false, -1, -1, -1, null);
         }
 
-        /** @return movimento que solicita a geração de um novo tabuleiro. */
+        /** Cria um movimento do tipo NEW_BOARD. */
         public static Move newBoard() {
             return new Move(CommandTypeEnum.NEW_BOARD, false, -1, -1, -1, null);
         }
 
-        /** @return movimento que solicita o status atual da partida. */
+        /** Cria um movimento do tipo STATUS. */
         public static Move status() {
             return new Move(CommandTypeEnum.STATUS, false, -1, -1, -1, null);
         }
 
-        /** @return movimento que solicita o preenchimento automático do tabuleiro. */
+        /** Cria um movimento do tipo COMPLETE. */
         public static Move complete() {
             return new Move(CommandTypeEnum.COMPLETE, false, -1, -1, -1, null);
         }
@@ -309,78 +293,64 @@ public class ConsoleUI implements AutoCloseable {
          *
          * @param row linha (0–8)
          * @param col coluna (0–8)
-         * @return movimento do tipo REMOVE
          */
         public static Move remove(int row, int col) {
             return new Move(CommandTypeEnum.REMOVE, false, row, col, 0, null);
         }
 
-        /** @return movimento que limpa todas as jogadas do usuário. */
+        /** Cria um movimento do tipo CLEAR. */
         public static Move clearUserMoves() {
             return new Move(CommandTypeEnum.CLEAR, false, -1, -1, -1, null);
         }
 
-        /** @return {@code true} se o comando solicita encerrar o jogo. */
         public boolean isQuit() {
             return quit;
         }
 
-        /** @return {@code true} se o comando é de salvar partida. */
         public boolean isSave() {
             return type == CommandTypeEnum.SAVE;
         }
 
-        /** @return {@code true} se o comando é de carregar partida. */
         public boolean isLoad() {
             return type == CommandTypeEnum.LOAD;
         }
 
-        /** @return {@code true} se o comando é de ajuda. */
         public boolean isHelp() {
             return type == CommandTypeEnum.HELP;
         }
 
-        /** @return {@code true} se o comando solicita um novo tabuleiro. */
         public boolean isNewBoard() {
             return type == CommandTypeEnum.NEW_BOARD;
         }
 
-        /** @return {@code true} se o comando solicita o status. */
         public boolean isStatus() {
             return type == CommandTypeEnum.STATUS;
         }
 
-        /** @return {@code true} se o comando solicita resolução automática. */
         public boolean isComplete() {
             return type == CommandTypeEnum.COMPLETE;
         }
 
-        /** @return {@code true} se o comando remove o valor de uma célula. */
         public boolean isRemove() {
             return type == CommandTypeEnum.REMOVE;
         }
 
-        /** @return {@code true} se o comando limpa todas as jogadas do usuário. */
         public boolean isClear() {
             return type == CommandTypeEnum.CLEAR;
         }
 
-        /** @return a linha associada ao comando (0-indexada). */
         public int getRow() {
             return row;
         }
 
-        /** @return a coluna associada ao comando (0-indexada). */
         public int getCol() {
             return col;
         }
 
-        /** @return o valor associado ao comando. */
         public int getValue() {
             return value;
         }
 
-        /** @return o caminho do arquivo, para comandos save/load. */
         public String getFilePath() {
             return filePath;
         }

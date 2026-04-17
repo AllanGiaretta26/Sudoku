@@ -25,7 +25,7 @@ import sudoku.util.FileManager;
  * @version 1.0.0
  */
 public class GameController {
-    /** Número padrão de células vazias em um novo tabuleiro. */
+    /** Padrão de células vazias por novo jogo. */
     private static final int DEFAULT_CELLS_TO_REMOVE = 40;
 
     private final ConsoleUI consoleUI;
@@ -183,9 +183,6 @@ public class GameController {
         return gameLogic.isVictory(board) ? "COMPLETO" : "INCOMPLETO";
     }
 
-    /**
-     * Imprime a lista de comandos disponíveis para o usuário.
-     */
     private void printHelp() {
         consoleUI.printMessage("Comandos disponiveis:");
         consoleUI.printMessage("- linha coluna valor  -> ex: 1 3 9");
