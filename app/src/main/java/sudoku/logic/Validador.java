@@ -37,19 +37,11 @@ public class Validador {
             throw new IllegalArgumentException("Row must be between 0 and 8.");
         }
 
-        boolean[] seen = new boolean[10];
+        int[] values = new int[9];
         for (int col = 0; col < 9; col++) {
-            int value = board.getCell(row, col).getValue();
-            if (value == 0) {
-                continue;
-            }
-
-            if (value < 1 || value > 9 || seen[value]) {
-                return false;
-            }
-            seen[value] = true;
+            values[col] = board.getCell(row, col).getValue();
         }
-        return true;
+        return checkUnique(values);
     }
 
     /**
@@ -65,19 +57,11 @@ public class Validador {
             throw new IllegalArgumentException("Column must be between 0 and 8.");
         }
 
-        boolean[] seen = new boolean[10];
+        int[] values = new int[9];
         for (int row = 0; row < 9; row++) {
-            int value = board.getCell(row, column).getValue();
-            if (value == 0) {
-                continue;
-            }
-
-            if (value < 1 || value > 9 || seen[value]) {
-                return false;
-            }
-            seen[value] = true;
+            values[row] = board.getCell(row, column).getValue();
         }
-        return true;
+        return checkUnique(values);
     }
 
     /**
@@ -97,19 +81,34 @@ public class Validador {
             throw new IllegalArgumentException("Box start must be between 0 and 6.");
         }
 
-        boolean[] seen = new boolean[10];
+        int[] values = new int[9];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                int value = board.getCell(row + i, column + j).getValue();
-                if (value == 0) {
-                    continue;
-                }
-
-                if (value < 1 || value > 9 || seen[value]) {
-                    return false;
-                }
-                seen[value] = true;
+                values[i * 3 + j] = board.getCell(row + i, column + j).getValue();
             }
+        }
+        return checkUnique(values);
+    }
+
+    /**
+     * Verifica se um array de 9 valores não contém duplicatas (ignorando zeros).
+     *
+     * <p>Método auxiliar compartilhado pelos três eixos de validação, eliminando
+     * a duplicação do bloco {@code boolean[] seen} em cada método público.
+     *
+     * @param values array de 9 inteiros representando os valores de um eixo do tabuleiro
+     * @return {@code true} se todos os valores não-zero forem únicos e entre 1 e 9
+     */
+    private boolean checkUnique(int[] values) {
+        boolean[] seen = new boolean[10];
+        for (int value : values) {
+            if (value == 0) {
+                continue;
+            }
+            if (value < 1 || value > 9 || seen[value]) {
+                return false;
+            }
+            seen[value] = true;
         }
         return true;
     }
