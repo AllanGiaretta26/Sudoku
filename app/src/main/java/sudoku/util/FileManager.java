@@ -128,8 +128,8 @@ public class FileManager {
                 int value;
                 int fixed;
                 try {
-                    value = Integer.parseInt(parts[0]);
-                    fixed = Integer.parseInt(parts[1]);
+                    value = Integer.parseInt(parts[0].trim());
+                    fixed = Integer.parseInt(parts[1].trim());
                 } catch (NumberFormatException exception) {
                     throw new IOException("Invalid number format at cell [" + row + "," + col + "].", exception);
                 }
