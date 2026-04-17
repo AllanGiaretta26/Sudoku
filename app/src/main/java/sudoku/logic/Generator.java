@@ -198,20 +198,20 @@ public class Generator {
         }
         Collections.shuffle(positions, random);
 
+        // Primeiro marca tudo como fixo; as células removidas serão desmarcadas a seguir.
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                board.getCell(row, col).setFixed(true);
+            }
+        }
+
+        // Remove as células sorteadas e desmarca seu estado fixo.
         for (int i = 0; i < cellsToRemove; i++) {
             int position = positions.get(i);
             int row = position / 9;
             int col = position % 9;
             board.setValue(row, col, 0);
             board.getCell(row, col).setFixed(false);
-        }
-
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
-                if (board.getCell(row, col).getValue() != 0) {
-                    board.getCell(row, col).setFixed(true);
-                }
-            }
         }
     }
 }
