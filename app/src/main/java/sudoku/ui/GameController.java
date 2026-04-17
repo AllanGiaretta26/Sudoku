@@ -2,44 +2,85 @@ package sudoku.ui;
 
 import java.io.IOException;
 
+import sudoku.logic.GameLogic;
 import sudoku.logic.Generator;
 import sudoku.logic.Solver;
 import sudoku.logic.Validador;
 import sudoku.model.Board;
-import sudoku.model.Cell;
 import sudoku.ui.ConsoleUI.Move;
 import sudoku.util.FileManager;
 
 /**
- * Orquestra o ciclo principal do jogo, conectando UI, geracao,
- * validacao, persistencia e regras de partida.
+ * Orquestra o ciclo principal do jogo, conectando UI, geração, validação,
+ * persistência e regras de partida.
+ *
+ * <p>Atua como <em>controller</em> no padrão MVC: não contém lógica de Sudoku nem
+ * responsabilidades de I/O diretas; delega a cada colaborador o que compete a ele
+ * e se concentra em coordenar o fluxo.
+ *
+ * <p>Dependências são injetadas via construtor — há um construtor de conveniência
+ * que monta um grafo de dependências padrão para uso produtivo pela {@code App}.
+ *
+ * @author  Allan Giaretta
+ * @version 1.0.0
  */
 public class GameController {
+    /** Número padrão de células vazias em um novo tabuleiro. */
+    private static final int DEFAULT_CELLS_TO_REMOVE = 40;
+
     private final ConsoleUI consoleUI;
     private final Generator generator;
     private final Solver solver;
-    private final Validador validador;
     private final FileManager fileManager;
+    private final GameLogic gameLogic;
 
+    /**
+     * Construtor de conveniência: instancia o grafo de dependências padrão
+     * (útil para inicialização rápida em {@code main}).
+     */
     public GameController() {
-        this.consoleUI = new ConsoleUI();
-        this.generator = new Generator();
-        this.solver = new Solver();
-        this.validador = new Validador();
-        this.fileManager = new FileManager();
+        this(new ConsoleUI(), new Generator(), new Solver(), new FileManager(),
+                new GameLogic(new Validador()));
     }
 
     /**
-     * Loop principal da aplicacao em modo console.
+     * Construtor com injeção de dependências, usado em testes e pela {@code App}.
+     *
+     * @param consoleUI   camada de entrada e saída
+     * @param generator   gerador de tabuleiros
+     * @param solver      resolvedor por backtracking
+     * @param fileManager persistência em arquivo
+     * @param gameLogic   regras de partida (vitória, cópia, limpeza)
+     * @throws IllegalArgumentException se qualquer dependência for {@code null}
+     */
+    public GameController(ConsoleUI consoleUI, Generator generator, Solver solver,
+                          FileManager fileManager, GameLogic gameLogic) {
+        if (consoleUI == null || generator == null || solver == null
+                || fileManager == null || gameLogic == null) {
+            throw new IllegalArgumentException("Dependencies cannot be null.");
+        }
+        this.consoleUI = consoleUI;
+        this.generator = generator;
+        this.solver = solver;
+        this.fileManager = fileManager;
+        this.gameLogic = gameLogic;
+    }
+
+    /**
+     * Executa o loop principal da aplicação em modo console.
+     *
+     * <p>A cada iteração: exibe o tabuleiro, verifica vitória, lê um comando
+     * e o aplica conforme o tipo. O método retorna quando o jogador encerra
+     * o jogo ({@code q}) ou completa o puzzle.
      */
     public void run() {
-        Board board = generator.generate(40);
+        Board board = generator.generate(DEFAULT_CELLS_TO_REMOVE);
         consoleUI.printMessage("Sudoku iniciado. Digite 'help' para ver os comandos.");
 
         while (true) {
             consoleUI.printBoard(board);
 
-            if (isVictory(board)) {
+            if (gameLogic.isVictory(board)) {
                 consoleUI.printMessage("Parabens! Voce venceu o jogo.");
                 return;
             }
@@ -76,7 +117,7 @@ public class GameController {
             }
 
             if (move.isNewBoard()) {
-                board = generator.generate(40);
+                board = generator.generate(DEFAULT_CELLS_TO_REMOVE);
                 consoleUI.printMessage("Novo tabuleiro gerado.");
                 continue;
             }
@@ -87,7 +128,7 @@ public class GameController {
             }
 
             if (move.isComplete()) {
-                Board solvedCandidate = copyBoard(board);
+                Board solvedCandidate = gameLogic.copyBoard(board);
                 if (solver.solve(solvedCandidate)) {
                     board = solvedCandidate;
                     consoleUI.printMessage("Tabuleiro completado automaticamente.");
@@ -110,7 +151,7 @@ public class GameController {
             }
 
             if (move.isClear()) {
-                clearAllUserMoves(board);
+                gameLogic.clearAllUserMoves(board);
                 consoleUI.printMessage("Todos os numeros digitados pelo usuario foram removidos.");
                 continue;
             }
@@ -129,66 +170,22 @@ public class GameController {
         }
     }
 
-    private boolean isVictory(Board board) {
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
-                if (board.getCell(row, col).getValue() == 0) {
-                    return false;
-                }
-            }
-        }
-
-        for (int i = 0; i < 9; i++) {
-            if (!validador.isValidRow(board, i) || !validador.isValidColumn(board, i)) {
-                return false;
-            }
-        }
-
-        for (int row = 0; row < 9; row += 3) {
-            for (int col = 0; col < 9; col += 3) {
-                if (!validador.isValidBox(board, row, col)) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
     /**
-     * Retorna o status da partida para exibicao ao usuario.
+     * Retorna o status textual da partida, usado pelo comando {@code status}.
+     *
+     * @param board tabuleiro atual
+     * @return {@code "NAO_INICIADO"}, {@code "COMPLETO"} ou {@code "INCOMPLETO"}
      */
     private String getGameStatus(Board board) {
         if (board == null) {
             return "NAO_INICIADO";
         }
-        return isVictory(board) ? "COMPLETO" : "INCOMPLETO";
-    }
-
-    private Board copyBoard(Board board) {
-        Cell[][] cells = new Cell[9][9];
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
-                Cell source = board.getCell(row, col);
-                cells[row][col] = new Cell(source.getValue(), source.isFixed());
-            }
-        }
-        return new Board(cells);
+        return gameLogic.isVictory(board) ? "COMPLETO" : "INCOMPLETO";
     }
 
     /**
-     * Limpa apenas valores inseridos pelo usuario, preservando as celulas fixas.
+     * Imprime a lista de comandos disponíveis para o usuário.
      */
-    private void clearAllUserMoves(Board board) {
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
-                if (!board.getCell(row, col).isFixed()) {
-                    board.setValue(row, col, 0);
-                }
-            }
-        }
-    }
-
     private void printHelp() {
         consoleUI.printMessage("Comandos disponiveis:");
         consoleUI.printMessage("- linha coluna valor  -> ex: 1 3 9");
