@@ -1,32 +1,38 @@
-# Ignore Gradle project-specific cache directory
-.gradle
-
-# Ignore Gradle build output directory
-build
-
-# Ignore build outputs in submodules
+# ── Gradle ────────────────────────────────────────────────────────────────────
+.gradle/
+build/
 **/build/
 out/
 bin/
+gradle-app.setting
 
-# Ignore IDE/editor files
+# Manter o JAR do Gradle Wrapper no controle de versão
+!gradle/wrapper/gradle-wrapper.jar
+
+# ── Java ──────────────────────────────────────────────────────────────────────
+*.class
+
+# ── IDEs / Editores ───────────────────────────────────────────────────────────
 .idea/
 .vscode/
 *.iml
 *.ipr
 *.iws
 
-# Ignore OS-specific files
+# ── Sistema Operacional ───────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 
-# Ignore logs and temporary files
+# ── Logs e temporários ────────────────────────────────────────────────────────
 *.log
 *.tmp
 *.swp
+*.bak
 
-# Ignore local game save files
+# ── Ambiente local ────────────────────────────────────────────────────────────
+.env
+local.properties
+
+# ── Arquivos de jogo e documentação gerada ────────────────────────────────────
 saves/
-
-# Ignore documentation files
 docs/

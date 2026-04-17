@@ -1,12 +1,11 @@
-#
-# https://help.github.com/articles/dealing-with-line-endings/
-#
-# Linux start script should use lf
-/gradlew        text eol=lf
+# Normaliza todas as extremidades de linha para LF no repositório.
+# Arquivos de texto verificados com text=auto receberão a conversão correta
+# no checkout (LF no Linux/macOS, CRLF no Windows) se eol não for forçado.
+* text=auto eol=lf
 
-# These are Windows script files and should use crlf
-*.bat           text eol=crlf
+# Batch scripts do Windows exigem CRLF
+*.bat text eol=crlf
 
-# Binary files should be left untouched
-*.jar           binary
-
+# Binários — sem conversão de linha
+*.jar   binary
+*.class binary
