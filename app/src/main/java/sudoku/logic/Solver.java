@@ -56,27 +56,29 @@ public class Solver {
         if (board == null) {
             throw new IllegalArgumentException("Board cannot be null.");
         }
-        return solveBacktracking(board);
+        return solveBacktracking(board, 0);
     }
 
     /**
      * Implementa o núcleo recursivo do backtracking.
      *
-     * @param board tabuleiro em construção
+     * @param board      tabuleiro em construção
+     * @param startIndex índice linear (0-80) a partir do qual a busca por célula vazia começa
      * @return {@code true} se a recursão atingiu um estado totalmente preenchido e válido
      */
-    private boolean solveBacktracking(Board board) {
-        int[] emptyCell = findEmptyCell(board);
+    private boolean solveBacktracking(Board board, int startIndex) {
+        int[] emptyCell = findEmptyCell(board, startIndex);
         if (emptyCell == null) {
             return true;
         }
 
-        int row = emptyCell[0];
-        int col = emptyCell[1];
+        int row         = emptyCell[0];
+        int col         = emptyCell[1];
+        int linearIndex = emptyCell[2];
 
         for (int value = 1; value <= 9; value++) {
             board.setValue(row, col, value);
-            if (isPlacementValid(board, row, col) && solveBacktracking(board)) {
+            if (isPlacementValid(board, row, col) && solveBacktracking(board, linearIndex + 1)) {
                 return true;
             }
         }
@@ -86,18 +88,20 @@ public class Solver {
     }
 
     /**
-     * Encontra a primeira célula vazia percorrendo o tabuleiro linha a linha.
+     * Encontra a primeira célula vazia a partir de {@code startIndex} percorrendo o tabuleiro
+     * linha a linha em ordem linear.
      *
-     * @param board tabuleiro a ser varrido
-     * @return array {@code [row, col]} da primeira célula com valor {@code 0},
-     *         ou {@code null} se o tabuleiro estiver completamente preenchido
+     * @param board      tabuleiro a ser varrido
+     * @param startIndex índice linear inicial (0 = linha 0, coluna 0; 80 = linha 8, coluna 8)
+     * @return array {@code [row, col, linearIndex]} da primeira célula com valor {@code 0}
+     *         encontrada a partir de {@code startIndex}, ou {@code null} se não houver nenhuma
      */
-    private int[] findEmptyCell(Board board) {
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
-                if (board.getCell(row, col).getValue() == 0) {
-                    return new int[] {row, col};
-                }
+    private int[] findEmptyCell(Board board, int startIndex) {
+        for (int i = startIndex; i <= 80; i++) {
+            int row = i / 9;
+            int col = i % 9;
+            if (board.getCell(row, col).getValue() == 0) {
+                return new int[] {row, col, i};
             }
         }
         return null;
