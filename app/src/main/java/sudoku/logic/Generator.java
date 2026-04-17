@@ -34,18 +34,13 @@ import sudoku.model.Board;
  * @version 1.0.0
  */
 public class Generator {
-    /** Número padrão de células removidas quando {@link #generate()} é chamado. */
+    /** Padrão de células removidas por geração. */
     private static final int DEFAULT_CELLS_TO_REMOVE = 40;
 
-    /** Solver usado para produzir a solução base do tabuleiro. */
     private final Solver solver;
 
-    /** Fonte de aleatoriedade para permutações e remoções. */
     private final Random random;
 
-    /**
-     * Cria um gerador com solver padrão e fonte de aleatoriedade não determinística.
-     */
     public Generator() {
         this.solver = new Solver();
         this.random = new Random();
@@ -133,11 +128,7 @@ public class Generator {
         }
     }
 
-    /**
-     * Troca duas colunas <em>distintas</em> dentro de cada banda vertical (3 bandas de 3 colunas).
-     *
-     * @param board tabuleiro a ser transformado
-     */
+    /** Troca duas colunas distintas dentro de cada banda vertical (3 bandas de 3 colunas). */
     private void shuffleColumnsWithinStacks(Board board) {
         for (int stack = 0; stack < 3; stack++) {
             int baseCol = stack * 3;
@@ -148,13 +139,6 @@ public class Generator {
         }
     }
 
-    /**
-     * Troca o conteúdo de duas linhas inteiras.
-     *
-     * @param board tabuleiro a ser modificado
-     * @param rowA  primeira linha
-     * @param rowB  segunda linha
-     */
     private void swapRows(Board board, int rowA, int rowB) {
         if (rowA == rowB) {
             return;
@@ -166,13 +150,6 @@ public class Generator {
         }
     }
 
-    /**
-     * Troca o conteúdo de duas colunas inteiras.
-     *
-     * @param board tabuleiro a ser modificado
-     * @param colA  primeira coluna
-     * @param colB  segunda coluna
-     */
     private void swapColumns(Board board, int colA, int colB) {
         if (colA == colB) {
             return;

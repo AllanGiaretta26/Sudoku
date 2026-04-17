@@ -19,10 +19,9 @@ package sudoku.model;
  * @version 1.0.0
  */
 public class Board {
-    /** Tamanho do tabuleiro (9 linhas x 9 colunas). */
+    /** Dimensão do tabuleiro. */
     private static final int SIZE = 9;
 
-    /** Matriz interna de células. */
     private Cell[][] cell;
 
     /**
@@ -57,9 +56,7 @@ public class Board {
         }
     }
 
-    /**
-     * Constrói um tabuleiro {@code 9x9} totalmente vazio.
-     */
+    /** Constrói um tabuleiro 9x9 totalmente vazio. */
     public Board() {
         this.cell = new Cell[SIZE][SIZE];
         for (int row = 0; row < SIZE; row++) {
@@ -135,13 +132,6 @@ public class Board {
         return board.toString();
     }
 
-    /**
-     * Garante que os índices passados estejam dentro dos limites do tabuleiro.
-     *
-     * @param row índice da linha a validar
-     * @param col índice da coluna a validar
-     * @throws IllegalArgumentException se qualquer índice estiver fora de 0–8
-     */
     private void validateIndices(int row, int col) {
         if (row < 0 || row > 8 || col < 0 || col > 8) {
             throw new IllegalArgumentException("Row and column must be between 0 and 8.");

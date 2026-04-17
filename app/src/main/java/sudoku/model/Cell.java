@@ -43,11 +43,6 @@ public class Cell {
     public Cell() {
     }
 
-    /**
-     * Retorna o valor atual da célula.
-     *
-     * @return valor entre 0 e 9, onde 0 indica célula vazia
-     */
     public int getValue() {
         return this.value;
     }
@@ -65,20 +60,10 @@ public class Cell {
         this.value = value;
     }
 
-    /**
-     * Indica se a célula é fixa (parte do puzzle original).
-     *
-     * @return {@code true} se a célula não pode ser alterada pelo jogador
-     */
     public boolean isFixed() {
         return this.fixed;
     }
 
-    /**
-     * Marca ou desmarca a célula como fixa.
-     *
-     * @param fixed {@code true} para proteger a célula contra alterações do usuário
-     */
     public void setFixed(boolean fixed) {
         this.fixed = fixed;
     }
