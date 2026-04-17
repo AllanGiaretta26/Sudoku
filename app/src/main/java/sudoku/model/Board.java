@@ -72,14 +72,33 @@ public class Board {
     /**
      * Retorna a referência da célula localizada em {@code (row, col)}.
      *
+     * <p><strong>Atenção:</strong> este método retorna uma referência mutável para a
+     * célula interna. Alterações feitas no objeto retornado afetam diretamente o
+     * estado do tabuleiro. Prefira {@link #getValueAt(int, int)} quando apenas o
+     * valor for necessário.
+     *
      * @param row índice da linha (0–8)
      * @param col índice da coluna (0–8)
-     * @return a célula naquela posição
+     * @return referência mutável para a célula naquela posição
      * @throws IllegalArgumentException se os índices estiverem fora do intervalo válido
      */
     public Cell getCell(int row, int col) {
         validateIndices(row, col);
         return this.cell[row][col];
+    }
+
+    /**
+     * Retorna apenas o valor inteiro da célula localizada em {@code (row, col)},
+     * sem expor a referência mutável da célula.
+     *
+     * @param row índice da linha (0–8)
+     * @param col índice da coluna (0–8)
+     * @return valor entre 0 e 9, onde 0 indica célula vazia
+     * @throws IllegalArgumentException se os índices estiverem fora do intervalo válido
+     */
+    public int getValueAt(int row, int col) {
+        validateIndices(row, col);
+        return this.cell[row][col].getValue();
     }
 
     /**

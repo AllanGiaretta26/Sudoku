@@ -30,6 +30,9 @@ public class Cell {
      * @param fixed {@code true} se a célula não pode ser alterada pelo usuário
      */
     public Cell(int value, boolean fixed) {
+        if (value < 0 || value > 9) {
+            throw new IllegalArgumentException("Cell value must be between 0 and 9, got: " + value);
+        }
         this.value = value;
         this.fixed = fixed;
     }
@@ -53,8 +56,12 @@ public class Cell {
      * Define um novo valor para a célula.
      *
      * @param value novo valor (0 para limpar, 1–9 para preencher)
+     * @throws IllegalArgumentException se o valor estiver fora do intervalo 0–9
      */
     public void setValue(int value) {
+        if (value < 0 || value > 9) {
+            throw new IllegalArgumentException("Cell value must be between 0 and 9, got: " + value);
+        }
         this.value = value;
     }
 
