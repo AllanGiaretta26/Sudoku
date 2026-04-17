@@ -9,9 +9,40 @@ import java.util.List;
 
 import sudoku.model.Board;
 
+/**
+ * Responsável pela persistência de partidas de Sudoku em arquivo texto.
+ *
+ * <p>Formato do arquivo (versão {@code SUDOKU_SAVE_V1}):
+ * <pre>
+ * SUDOKU_SAVE_V1
+ * v:f,v:f,v:f,v:f,v:f,v:f,v:f,v:f,v:f   (linha 0)
+ * ...
+ * v:f,v:f,v:f,v:f,v:f,v:f,v:f,v:f,v:f   (linha 8)
+ * </pre>
+ * Onde {@code v} é o valor da célula (0–9) e {@code f} é 0 ou 1 indicando se
+ * a célula é fixa. O arquivo é gravado em UTF-8.
+ *
+ * <p>Operações de I/O usam {@code java.nio.file.Files}, que fecha recursos
+ * automaticamente. Validação é rigorosa: cabeçalho, número de linhas, formato de
+ * cada célula e faixa de valores são todos verificados na leitura.
+ *
+ * @author  Allan Giaretta
+ * @version 1.0.0
+ */
 public class FileManager {
+    /** Dimensão do tabuleiro (9 linhas x 9 colunas). */
     private static final int BOARD_SIZE = 9;
 
+    /**
+     * Salva o estado atual do tabuleiro em um arquivo texto.
+     *
+     * <p>Diretórios pai ausentes são criados automaticamente.
+     *
+     * @param board    tabuleiro a ser persistido
+     * @param filePath caminho de destino (não pode ser vazio)
+     * @throws IllegalArgumentException se {@code board} for {@code null} ou {@code filePath} vazio
+     * @throws IOException              em caso de falha ao gravar o arquivo
+     */
     public void saveGame(Board board, String filePath) throws IOException {
         if (board == null) {
             throw new IllegalArgumentException("Board cannot be null.");
@@ -44,6 +75,23 @@ public class FileManager {
         Files.writeString(path, content.toString(), StandardCharsets.UTF_8);
     }
 
+    /**
+     * Carrega um tabuleiro a partir de um arquivo salvo anteriormente.
+     *
+     * <p>Verifica:
+     * <ul>
+     *   <li>Existência do arquivo;</li>
+     *   <li>Número exato de 10 linhas (1 header + 9 linhas do tabuleiro);</li>
+     *   <li>Cabeçalho {@code SUDOKU_SAVE_V1};</li>
+     *   <li>9 células por linha, cada uma no formato {@code v:f};</li>
+     *   <li>Valores dentro das faixas válidas.</li>
+     * </ul>
+     *
+     * @param filePath caminho do arquivo a ser lido
+     * @return tabuleiro reconstruído
+     * @throws IllegalArgumentException se {@code filePath} for nulo ou vazio
+     * @throws IOException              se o arquivo não existir ou tiver formato inválido
+     */
     public Board loadGame(String filePath) throws IOException {
         if (filePath == null || filePath.trim().isEmpty()) {
             throw new IllegalArgumentException("filePath cannot be empty.");
