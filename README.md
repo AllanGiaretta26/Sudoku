@@ -36,7 +36,7 @@ Todas as funcionalidades estão implementadas, documentadas e cobertas por teste
 |---|---|
 | **Java 21** | Linguagem principal, programação orientada a objetos |
 | **Gradle** | Build, execução da aplicação e dos testes |
-| **JUnit 5** | Suíte de testes unitários (41 testes) |
+| **JUnit 5** | Suíte de testes unitários (71 testes) |
 | **Java NIO** (`java.nio.file`) | Leitura e escrita de partidas em arquivos `.txt` |
 | **Console / CLI** | Interface de interação com o usuário |
 
@@ -121,15 +121,20 @@ app/src/
    │  ├─ ValidadorTest.java
    │  ├─ SolverTest.java
    │  └─ GeneratorTest.java
-   └─ ui/
-      └─ ConsoleUICommandParserTest.java
+   ├─ model/
+   │  ├─ CellTest.java
+   │  └─ BoardTest.java
+   ├─ ui/
+   │  └─ ConsoleUICommandParserTest.java
+   └─ util/
+      └─ FileManagerTest.java
 ```
 
 ---
 
 ## 🧪 Testes
 
-O projeto conta com **41 testes unitários** distribuídos em 6 suítes:
+O projeto conta com **71 testes unitários** distribuídos em 9 suítes:
 
 | Suíte | Testes | O que cobre |
 |---|---|---|
@@ -138,6 +143,9 @@ O projeto conta com **41 testes unitários** distribuídos em 6 suítes:
 | `GameLogicTest` | 8 | Detecção de vitória; cópia de tabuleiro; limpeza de jogadas |
 | `GeneratorTest` | 6 | Contagem de células; marcação de fixos; limites; não-determinismo |
 | `SolverTest` | 5 | Resolução completa; boards parciais; board inconsistente |
+| `CellTest` | 9 | Validação de range; getters/setters; estado fixo |
+| `BoardTest` | 11 | Estado padrão; cópia profunda; referência mutável; limites de índice |
+| `FileManagerTest` | 10 | Roundtrip save/load; criação de diretórios; erros de formato; path traversal |
 | `AppTest` | 1 | Sanity check de instanciação |
 
 ---
