@@ -105,7 +105,9 @@ public class Generator {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
                 int value = board.getCell(row, col).getValue();
-                board.setValue(row, col, mapping.get(value));
+                if (value != 0) {
+                    board.setValue(row, col, mapping.get(value));
+                }
             }
         }
     }

@@ -97,7 +97,7 @@ public class Solver {
      *         encontrada a partir de {@code startIndex}, ou {@code null} se não houver nenhuma
      */
     private int[] findEmptyCell(Board board, int startIndex) {
-        for (int i = startIndex; i <= 80; i++) {
+        for (int i = startIndex; i < 81; i++) {
             int row = i / 9;
             int col = i % 9;
             if (board.getCell(row, col).getValue() == 0) {
