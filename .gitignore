@@ -33,6 +33,6 @@ Thumbs.db
 .env
 local.properties
 
-# ── Arquivos de jogo e documentação gerada ────────────────────────────────────
+# ── Arquivos de jogo ────────────────────────────────────
 saves/
-docs/
+
