@@ -86,88 +86,70 @@ public class GameController {
             }
 
             Move move = consoleUI.readMove();
-            if (move.isQuit()) {
-                consoleUI.printMessage("Jogo encerrado.");
-                return;
-            }
-
-            if (move.isSave()) {
-                try {
-                    fileManager.saveGame(board, move.getFilePath());
-                    consoleUI.printMessage("Partida salva em: " + move.getFilePath());
-                } catch (IOException exception) {
-                    consoleUI.printMessage("Falha ao salvar partida: " + exception.getMessage());
-                }
-                continue;
-            }
-
-            if (move.isLoad()) {
-                try {
-                    board = fileManager.loadGame(move.getFilePath());
-                    consoleUI.printMessage("Partida carregada de: " + move.getFilePath());
-                } catch (IOException exception) {
-                    consoleUI.printMessage("Falha ao carregar partida: " + exception.getMessage());
-                }
-                continue;
-            }
-
-            if (move.isHelp()) {
-                printHelp();
-                continue;
-            }
-
-            if (move.isNewBoard()) {
-                board = generator.generate(DEFAULT_CELLS_TO_REMOVE);
-                consoleUI.printMessage("Novo tabuleiro gerado.");
-                continue;
-            }
-
-            if (move.isStatus()) {
-                consoleUI.printMessage("Status da partida: " + getGameStatus(board));
-                continue;
-            }
-
-            if (move.isComplete()) {
-                Board solvedCandidate = gameLogic.copyBoard(board);
-                if (solver.solve(solvedCandidate)) {
-                    board = solvedCandidate;
-                    consoleUI.printMessage("Tabuleiro completado automaticamente.");
-                } else {
-                    consoleUI.printMessage("Nao foi possivel completar o tabuleiro atual.");
-                }
-                continue;
-            }
-
-            if (move.isRemove()) {
-                int row = move.getRow();
-                int col = move.getCol();
-                if (board.getCell(row, col).isFixed()) {
-                    consoleUI.printMessage("Jogada errada para as regras Sudoku.");
-                    continue;
-                }
-                board.setValue(row, col, 0);
-                consoleUI.printMessage("Numero removido da posicao.");
-                continue;
-            }
-
-            if (move.isClear()) {
-                gameLogic.clearAllUserMoves(board);
-                consoleUI.printMessage("Todos os numeros digitados pelo usuario foram removidos.");
-                continue;
-            }
-
-            int row = move.getRow();
-            int col = move.getCol();
-            int value = move.getValue();
-
-            if (board.getCell(row, col).isFixed()) {
-                consoleUI.printMessage("Essa celula e fixa e nao pode ser alterada.");
-                continue;
-            }
-
-            board.setValue(row, col, value);
-            consoleUI.printMessage("Jogada aplicada.");
+            if (move.isQuit())     { consoleUI.printMessage("Jogo encerrado."); return; }
+            if (move.isSave())     { handleSave(move, board); continue; }
+            if (move.isLoad())     { board = handleLoad(move, board); continue; }
+            if (move.isHelp())     { printHelp(); continue; }
+            if (move.isNewBoard()) { board = generator.generate(DEFAULT_CELLS_TO_REMOVE); consoleUI.printMessage("Novo tabuleiro gerado."); continue; }
+            if (move.isStatus())   { consoleUI.printMessage("Status da partida: " + getGameStatus(board)); continue; }
+            if (move.isComplete()) { board = handleComplete(board); continue; }
+            if (move.isRemove())   { handleRemove(move, board); continue; }
+            if (move.isClear())    { gameLogic.clearAllUserMoves(board); consoleUI.printMessage("Todos os numeros digitados pelo usuario foram removidos."); continue; }
+            handlePlay(move, board);
         }
+    }
+
+    private void handleSave(Move move, Board board) {
+        try {
+            fileManager.saveGame(board, move.getFilePath());
+            consoleUI.printMessage("Partida salva em: " + move.getFilePath());
+        } catch (IOException exception) {
+            consoleUI.printMessage("Falha ao salvar partida: " + exception.getMessage());
+        }
+    }
+
+    private Board handleLoad(Move move, Board board) {
+        try {
+            Board loaded = fileManager.loadGame(move.getFilePath());
+            consoleUI.printMessage("Partida carregada de: " + move.getFilePath());
+            return loaded;
+        } catch (IOException exception) {
+            consoleUI.printMessage("Falha ao carregar partida: " + exception.getMessage());
+            return board;
+        }
+    }
+
+    private Board handleComplete(Board board) {
+        Board candidate = gameLogic.copyBoard(board);
+        if (solver.solve(candidate)) {
+            consoleUI.printMessage("Tabuleiro completado automaticamente.");
+            return candidate;
+        }
+        consoleUI.printMessage("Nao foi possivel completar o tabuleiro atual.");
+        return board;
+    }
+
+    private void handleRemove(Move move, Board board) {
+        int row = move.getRow();
+        int col = move.getCol();
+        if (board.getCell(row, col).isFixed()) {
+            consoleUI.printMessage("Jogada errada para as regras Sudoku.");
+            return;
+        }
+        board.setValue(row, col, 0);
+        consoleUI.printMessage("Numero removido da posicao.");
+    }
+
+    private void handlePlay(Move move, Board board) {
+        int row   = move.getRow();
+        int col   = move.getCol();
+        int value = move.getValue();
+        if (board.getCell(row, col).isFixed()) {
+            consoleUI.printMessage("Essa celula e fixa e nao pode ser alterada.");
+            return;
+        }
+        board.setValue(row, col, value);
+        consoleUI.printMessage("Jogada aplicada.");
     }
 
     /**
