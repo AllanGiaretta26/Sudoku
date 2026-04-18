@@ -50,6 +50,7 @@ public class FileManager {
         if (filePath == null || filePath.trim().isEmpty()) {
             throw new IllegalArgumentException("filePath cannot be empty.");
         }
+        validatePath(filePath);
 
         Path path = Paths.get(filePath);
         if (path.getParent() != null) {
@@ -96,6 +97,7 @@ public class FileManager {
         if (filePath == null || filePath.trim().isEmpty()) {
             throw new IllegalArgumentException("filePath cannot be empty.");
         }
+        validatePath(filePath);
 
         Path path = Paths.get(filePath);
         if (!Files.exists(path)) {
@@ -144,5 +146,18 @@ public class FileManager {
         }
 
         return board;
+    }
+
+    /**
+     * Valida que o caminho fornecido não contém sequências de path traversal
+     * (ex.: {@code ../../../etc/passwd}).
+     *
+     * @param filePath caminho a ser validado
+     * @throws IOException se o caminho contiver {@code ..}
+     */
+    private static void validatePath(String filePath) throws IOException {
+        if (filePath.contains("..")) {
+            throw new IOException("Caminho de arquivo inválido: não são permitidos caminhos com '..'.");
+        }
     }
 }
