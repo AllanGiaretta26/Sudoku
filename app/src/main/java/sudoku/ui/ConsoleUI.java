@@ -109,8 +109,7 @@ public class ConsoleUI implements AutoCloseable {
      * Lê comandos do usuário em loop até receber um comando válido, retornando o
      * {@link Move} correspondente.
      *
-     * <p>Entradas inválidas (ex.: número fora de 1–9, palavras em vez de dígitos,
-     * argumentos ausentes) não encerram a leitura — o método exibe mensagem de erro
+     * <p>Entradas inválidas não encerram a leitura — o método exibe mensagem de erro
      * e solicita novamente.
      *
      * @return movimento interpretado pronto para ser aplicado pelo controller
@@ -119,89 +118,88 @@ public class ConsoleUI implements AutoCloseable {
         while (true) {
             out.print("Comando (linha coluna valor | remove linha coluna | clear | save arquivo.txt | load arquivo.txt | new | status | complete | help | q): ");
             String input = scanner.nextLine().trim();
-
-            if (input.equalsIgnoreCase("q")) {
-                return Move.quit();
+            Move move = parseInput(input);
+            if (move != null) {
+                return move;
             }
+        }
+    }
 
-            if (input.equalsIgnoreCase("help")) {
-                return Move.help();
-            }
+    /**
+     * Despacha a entrada para o parser correto conforme o prefixo do comando.
+     * Retorna {@code null} quando a entrada não corresponde a nenhum comando válido
+     * (o loop de {@link #readMove()} continua nesse caso).
+     */
+    private Move parseInput(String input) {
+        String lower = input.toLowerCase();
+        if (lower.equals("q"))        return Move.quit();
+        if (lower.equals("help"))     return Move.help();
+        if (lower.equals("new"))      return Move.newBoard();
+        if (lower.equals("status"))   return Move.status();
+        if (lower.equals("complete")) return Move.complete();
+        if (lower.equals("clear"))    return Move.clearUserMoves();
+        if (lower.startsWith("save ")) return parseSave(input);
+        if (lower.startsWith("load ")) return parseLoad(input);
+        if (lower.startsWith("remove ")) return parseRemove(input);
+        return parsePlay(input);
+    }
 
-            if (input.equalsIgnoreCase("new")) {
-                return Move.newBoard();
-            }
+    private Move parseSave(String input) {
+        String filePath = input.substring(5).trim();
+        if (filePath.isEmpty()) {
+            printMessage("Informe o nome do arquivo. Exemplo: save partida.txt");
+            return null;
+        }
+        return Move.save(filePath);
+    }
 
-            if (input.equalsIgnoreCase("status")) {
-                return Move.status();
-            }
+    private Move parseLoad(String input) {
+        String filePath = input.substring(5).trim();
+        if (filePath.isEmpty()) {
+            printMessage("Informe o nome do arquivo. Exemplo: load partida.txt");
+            return null;
+        }
+        return Move.load(filePath);
+    }
 
-            if (input.equalsIgnoreCase("complete")) {
-                return Move.complete();
-            }
-
-            if (input.equalsIgnoreCase("clear")) {
-                return Move.clearUserMoves();
-            }
-
-            if (input.toLowerCase().startsWith("save ")) {
-                String filePath = input.substring(5).trim();
-                if (filePath.isEmpty()) {
-                    printMessage("Informe o nome do arquivo. Exemplo: save partida.txt");
-                    continue;
-                }
-                return Move.save(filePath);
-            }
-
-            if (input.toLowerCase().startsWith("load ")) {
-                String filePath = input.substring(5).trim();
-                if (filePath.isEmpty()) {
-                    printMessage("Informe o nome do arquivo. Exemplo: load partida.txt");
-                    continue;
-                }
-                return Move.load(filePath);
-            }
-
-            if (input.toLowerCase().startsWith("remove ")) {
-                String[] parts = input.split("\\s+");
-                if (parts.length != 3) {
-                    printMessage(INVALID_MOVE_MESSAGE);
-                    continue;
-                }
-                try {
-                    int row = Integer.parseInt(parts[1]);
-                    int col = Integer.parseInt(parts[2]);
-                    if (row < 1 || row > 9 || col < 1 || col > 9) {
-                        printMessage(INVALID_MOVE_MESSAGE);
-                        continue;
-                    }
-                    return Move.remove(row - 1, col - 1);
-                } catch (NumberFormatException exception) {
-                    printMessage(INVALID_MOVE_MESSAGE);
-                    continue;
-                }
-            }
-
-            String[] parts = input.split("\\s+");
-            if (parts.length != 3) {
+    private Move parseRemove(String input) {
+        String[] parts = input.split("\\s+");
+        if (parts.length != 3) {
+            printMessage(INVALID_MOVE_MESSAGE);
+            return null;
+        }
+        try {
+            int row = Integer.parseInt(parts[1]);
+            int col = Integer.parseInt(parts[2]);
+            if (row < 1 || row > 9 || col < 1 || col > 9) {
                 printMessage(INVALID_MOVE_MESSAGE);
-                continue;
+                return null;
             }
+            return Move.remove(row - 1, col - 1);
+        } catch (NumberFormatException exception) {
+            printMessage(INVALID_MOVE_MESSAGE);
+            return null;
+        }
+    }
 
-            try {
-                int row = Integer.parseInt(parts[0]);
-                int col = Integer.parseInt(parts[1]);
-                int value = Integer.parseInt(parts[2]);
-
-                if (row < 1 || row > 9 || col < 1 || col > 9 || value < 0 || value > 9) {
-                    printMessage(INVALID_MOVE_MESSAGE);
-                    continue;
-                }
-
-                return Move.play(row - 1, col - 1, value);
-            } catch (NumberFormatException exception) {
+    private Move parsePlay(String input) {
+        String[] parts = input.split("\\s+");
+        if (parts.length != 3) {
+            printMessage(INVALID_MOVE_MESSAGE);
+            return null;
+        }
+        try {
+            int row   = Integer.parseInt(parts[0]);
+            int col   = Integer.parseInt(parts[1]);
+            int value = Integer.parseInt(parts[2]);
+            if (row < 1 || row > 9 || col < 1 || col > 9 || value < 0 || value > 9) {
                 printMessage(INVALID_MOVE_MESSAGE);
+                return null;
             }
+            return Move.play(row - 1, col - 1, value);
+        } catch (NumberFormatException exception) {
+            printMessage(INVALID_MOVE_MESSAGE);
+            return null;
         }
     }
 
