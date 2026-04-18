@@ -16,7 +16,7 @@ import sudoku.model.Board;
  * {@link #solve(Board)}; a mutação ocorre no próprio {@link Board} passado como parâmetro.
  *
  * @author  Allan Giaretta
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class Solver {
     /** Validador de regras injetado, usado em cada tentativa de preenchimento. */

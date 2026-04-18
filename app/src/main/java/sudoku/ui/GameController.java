@@ -22,7 +22,7 @@ import sudoku.util.FileManager;
  * que monta um grafo de dependências padrão para uso produtivo pela {@code App}.
  *
  * @author  Allan Giaretta
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class GameController {
     /** Padrão de células vazias por novo jogo. */

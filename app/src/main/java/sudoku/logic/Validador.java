@@ -20,7 +20,7 @@ import sudoku.model.Board;
  * entre múltiplas instâncias de {@link Solver} ou {@link GameLogic}.
  *
  * @author  Allan Giaretta
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class Validador {
 

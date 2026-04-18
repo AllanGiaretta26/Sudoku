@@ -27,7 +27,7 @@ import sudoku.model.Board;
  * cada célula e faixa de valores são todos verificados na leitura.
  *
  * @author  Allan Giaretta
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class FileManager {
     /** Dimensão do tabuleiro (9 linhas x 9 colunas). */

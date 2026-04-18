@@ -31,7 +31,7 @@ import sudoku.model.Board;
  * altos de remoção, o puzzle pode admitir múltiplas soluções.
  *
  * @author  Allan Giaretta
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class Generator {
     /** Padrão de células removidas por geração. */

@@ -25,7 +25,7 @@ import sudoku.util.CommandTypeEnum;
  * injetar streams arbitrários, facilitando testes unitários do parser de comandos.
  *
  * @author  Allan Giaretta
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class ConsoleUI implements AutoCloseable {
     /** Scanner que lê os comandos do usuário. */
@@ -211,7 +211,7 @@ public class ConsoleUI implements AutoCloseable {
      * predicados {@code isXxx()} para decidir o fluxo apropriado.
      *
      * @author  Allan Giaretta
-     * @version 1.0.0
+     * @version 1.0.1
      */
     public static class Move {
         /** Tipo do comando, classificado pelo enum {@link CommandTypeEnum}. */

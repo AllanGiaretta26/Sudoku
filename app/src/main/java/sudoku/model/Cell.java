@@ -14,7 +14,7 @@ package sudoku.model;
  * atualize valores durante o jogo ou o processo de resolução por backtracking.
  *
  * @author  Allan Giaretta
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class Cell {
     /** Valor armazenado na célula. {@code 0} representa célula vazia. */

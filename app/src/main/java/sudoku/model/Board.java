@@ -16,7 +16,7 @@ package sudoku.model;
  * das células recebidas, garantindo independência do array original.
  *
  * @author  Allan Giaretta
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class Board {
     /** Dimensão do tabuleiro. */
