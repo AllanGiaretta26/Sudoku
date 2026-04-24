@@ -156,4 +156,4 @@ Distribuído sob a licença [MIT](./LICENSE).
 
 ---
 
-Desenvolvido por **Allan Giaretta**.
+Desenvolvido por [Allan Giaretta](https://github.com/AllanGiaretta26).
