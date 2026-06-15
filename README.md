@@ -3,7 +3,7 @@
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Build-Gradle-02303A?logo=gradle&logoColor=white)
 ![Tests](https://img.shields.io/badge/Tests-JUnit_5-25A162?logo=junit5&logoColor=white)
-![Status](https://img.shields.io/badge/status-em%20manutenção-yellow)
+![Status](https://img.shields.io/badge/status-concluído-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 > Jogo de Sudoku no terminal, implementado em Java 21 com Gradle.
@@ -14,7 +14,7 @@ A aplicação gera um puzzle 9x9, aceita comandos via CLI, salva e carrega parti
 
 ## Status do projeto
 
-Projeto funcional, com 71 testes unitários distribuídos em 9 suítes.
+Projeto concluído e funcional, com 71 testes unitários distribuídos em 9 suítes.
 
 ## Tecnologias
 
