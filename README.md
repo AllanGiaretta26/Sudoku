@@ -1,27 +1,42 @@
 # Sudoku em Java
 
-Jogo de Sudoku no terminal, implementado em Java 21 com Gradle. A aplicação gera um puzzle 9x9, aceita comandos via CLI, salva/carrega partidas em arquivo texto e consegue completar o tabuleiro usando backtracking.
+![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
+![Gradle](https://img.shields.io/badge/Build-Gradle-02303A?logo=gradle&logoColor=white)
+![Tests](https://img.shields.io/badge/Tests-JUnit_5-25A162?logo=junit5&logoColor=white)
+![Status](https://img.shields.io/badge/status-em%20manutenção-yellow)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
-## Status
+> Jogo de Sudoku no terminal, implementado em Java 21 com Gradle.
+
+## Descrição
+
+A aplicação gera um puzzle 9x9, aceita comandos via CLI, salva e carrega partidas em arquivo texto e consegue completar o tabuleiro usando um solver por backtracking. O projeto foi organizado em camadas (`model`, `logic`, `ui`, `util`) e conta com suíte de testes unitários e documentação técnica detalhada.
+
+## Status do projeto
 
 Projeto funcional, com 71 testes unitários distribuídos em 9 suítes.
 
-Limite importante: a aplicação não bloqueia conflitos de Sudoku a cada jogada. Uma jogada em célula não fixa é aplicada mesmo que crie duplicidade; a validação completa acontece na verificação de vitória e no solver.
+## Tecnologias
 
-## Requisitos
+- Java 21
+- Gradle (com Gradle Wrapper, sem necessidade de instalação local)
+- JUnit 5
+
+## Como instalar e rodar
+
+### Pré-requisitos
 
 - Java 21 ou superior no `PATH`.
 - Git para clonar o repositório.
-- Gradle local não é obrigatório: o projeto inclui Gradle Wrapper (`gradlew` e `gradlew.bat`).
 
-## Instalação
+### Clonar o repositório
 
 ```bash
 git clone https://github.com/AllanGiaretta26/Sudoku.git
 cd Sudoku
 ```
 
-## Execução
+### Executar
 
 Linux/macOS/Git Bash:
 
@@ -35,7 +50,7 @@ Windows CMD/PowerShell:
 .\gradlew.bat run
 ```
 
-## Testes
+### Rodar os testes
 
 Linux/macOS/Git Bash:
 
@@ -63,6 +78,30 @@ Cobertura atual por suíte:
 | `FileManagerTest` | 10 | Roundtrip save/load, diretórios, formato inválido e path traversal |
 | `AppTest` | 1 | Sanity check do ponto de entrada |
 
+## Demonstração
+
+```text
+    1 2 3   4 5 6   7 8 9
+  +-------+-------+-------+
+1 | 5 3 . | . 7 . | . . . | 
+2 | 6 . . | 1 9 5 | . . . | 
+3 | . 9 8 | . . . | . 6 . | 
+  +-------+-------+-------+
+4 | 8 . . | . 6 . | . . 3 | 
+5 | 4 . . | 8 . 3 | . . 1 | 
+6 | 7 . . | . 2 . | . . 6 | 
+  +-------+-------+-------+
+7 | . 6 . | . . . | 2 8 . | 
+8 | . . . | 4 1 9 | . . 5 | 
+9 | . . . | . 8 . | . 7 9 | 
+  +-------+-------+-------+
+
+Comando (linha coluna valor | remove linha coluna | clear | save arquivo.txt | load arquivo.txt | new | status | complete | help | q): 1 3 4
+Comando (...): status
+INCOMPLETO
+Comando (...): q
+```
+
 ## Como jogar
 
 Ao iniciar, o jogo imprime o tabuleiro e solicita comandos no terminal. Linhas e colunas digitadas pelo usuário usam índice de 1 a 9; internamente o código converte para 0 a 8.
@@ -81,6 +120,8 @@ Ao iniciar, o jogo imprime o tabuleiro e solicita comandos no terminal. Linhas e
 | `q` | Encerra o jogo. | `q` |
 
 Células fixas são as pistas originais do puzzle e não podem ser alteradas pelo jogador. O jogo detecta vitória quando o tabuleiro está completamente preenchido e todas as linhas, colunas e caixas 3x3 são válidas.
+
+> **Atenção:** a aplicação não bloqueia conflitos de Sudoku a cada jogada. Uma jogada em célula não fixa é aplicada mesmo que crie duplicidade; a validação completa acontece apenas na verificação de vitória (`status`) e no solver (`complete`).
 
 ## Persistência
 
