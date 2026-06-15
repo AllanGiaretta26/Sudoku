@@ -134,8 +134,8 @@ app/src/
 
 ## Licença
 
-Distribuído sob a licença [MIT](LICENSE).
+Distribuído sob a licença [MIT](./LICENSE).
 
-## Autor
+---
 
-Allan Giaretta
+Desenvolvido por **Allan Giaretta**.
