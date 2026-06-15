@@ -1,159 +1,141 @@
-# 🎯 Sudoku em Java
+# Sudoku em Java
 
-![Status](https://img.shields.io/badge/status-concluído-brightgreen)
-![Java](https://img.shields.io/badge/Java-21-orange)
-![Gradle](https://img.shields.io/badge/Gradle-build-06A0D1?logo=gradle)
-![JUnit5](https://img.shields.io/badge/JUnit-5-25A162)
-![License](https://img.shields.io/badge/licença-MIT-lightgrey)
+Jogo de Sudoku no terminal, implementado em Java 21 com Gradle. A aplicação gera um puzzle 9x9, aceita comandos via CLI, salva/carrega partidas em arquivo texto e consegue completar o tabuleiro usando backtracking.
 
-> Jogo de Sudoku completo no terminal — com geração automática de puzzles, validação em tempo real e suporte a salvar e carregar partidas.
+## Status
 
----
+Projeto funcional, com 71 testes unitários distribuídos em 9 suítes.
 
-## 📋 Descrição
+Limite importante: a aplicação não bloqueia conflitos de Sudoku a cada jogada. Uma jogada em célula não fixa é aplicada mesmo que crie duplicidade; a validação completa acontece na verificação de vitória e no solver.
 
-**Sudoku em Java** é uma aplicação de console que implementa o clássico jogo de lógica. O tabuleiro `9x9` é dividido em 9 blocos `3x3`, e o objetivo é preencher as células vazias com números de `1` a `9` sem repetir nenhum na mesma linha, coluna ou bloco.
+## Requisitos
 
-O puzzle é gerado automaticamente a cada partida usando um algoritmo de **backtracking recursivo** com randomização estrutural (permutação de dígitos e troca de linhas/colunas dentro de bandas). O projeto aplica **injeção de dependências**, separando claramente as responsabilidades em camadas de modelo, lógica, interface e persistência.
+- Java 21 ou superior no `PATH`.
+- Git para clonar o repositório.
+- Gradle local não é obrigatório: o projeto inclui Gradle Wrapper (`gradlew` e `gradlew.bat`).
 
----
-
-## 📌 Status do Projeto
-
-![Status](https://img.shields.io/badge/status-concluído-brightgreen)
-
-Todas as funcionalidades estão implementadas, documentadas e cobertas por testes.
-
----
-
-## 🛠️ Tecnologias
-
-![Java](https://img.shields.io/badge/Java-21-orange)
-![Gradle](https://img.shields.io/badge/Gradle-06A0D1?logo=gradle)
-![JUnit5](https://img.shields.io/badge/JUnit-5-25A162)
-
-| Tecnologia | Uso |
-|---|---|
-| **Java 21** | Linguagem principal, programação orientada a objetos |
-| **Gradle** | Build, execução da aplicação e dos testes |
-| **JUnit 5** | Suíte de testes unitários (71 testes) |
-| **Java NIO** (`java.nio.file`) | Leitura e escrita de partidas em arquivos `.txt` |
-| **Console / CLI** | Interface de interação com o usuário |
-
----
-
-## 🚀 Como Instalar e Rodar
-
-### Pré-requisitos
-
-- [Java 21+](https://adoptium.net/) instalado e configurado no PATH
-- [Git](https://git-scm.com/) instalado
-
-### Instalação
+## Instalação
 
 ```bash
-# Clone o repositório
 git clone https://github.com/AllanGiaretta26/Sudoku.git
-
-# Acesse a pasta do projeto
 cd Sudoku
 ```
 
-### Executar o jogo
+## Execução
+
+Linux/macOS/Git Bash:
 
 ```bash
+./gradlew run
+```
+
+Windows CMD/PowerShell:
+
+```bat
 .\gradlew.bat run
 ```
 
-### Executar os testes
+## Testes
+
+Linux/macOS/Git Bash:
 
 ```bash
+./gradlew test
+```
+
+Windows CMD/PowerShell:
+
+```bat
 .\gradlew.bat test
 ```
 
----
+Cobertura atual por suíte:
 
-## 🎮 Como Jogar
+| Suíte | Testes | Escopo |
+|---|---:|---|
+| `ValidadorTest` | 9 | Unicidade em linha, coluna e caixa; limites de índice |
+| `ConsoleUICommandParserTest` | 12 | Parsing de comandos e recuperação de entradas inválidas |
+| `GameLogicTest` | 8 | Vitória, cópia de tabuleiro e limpeza de jogadas |
+| `GeneratorTest` | 6 | Remoção de células, marcação de fixos, limites e aleatoriedade |
+| `SolverTest` | 5 | Resolução por backtracking e cenários sem solução |
+| `CellTest` | 9 | Range de valor, getters/setters e estado fixo |
+| `BoardTest` | 11 | Estado inicial, cópia profunda, referência mutável e limites |
+| `FileManagerTest` | 10 | Roundtrip save/load, diretórios, formato inválido e path traversal |
+| `AppTest` | 1 | Sanity check do ponto de entrada |
 
-Após iniciar o jogo, o tabuleiro será exibido no terminal. Use os comandos abaixo para interagir:
+## Como jogar
 
-| Comando | Descrição | Exemplo |
+Ao iniciar, o jogo imprime o tabuleiro e solicita comandos no terminal. Linhas e colunas digitadas pelo usuário usam índice de 1 a 9; internamente o código converte para 0 a 8.
+
+| Comando | Efeito | Exemplo |
 |---|---|---|
-| `linha coluna valor` | Insere um número na célula indicada | `3 5 7` |
-| `remove linha coluna` | Remove o número de uma célula não fixa | `remove 3 5` |
-| `clear` | Remove todos os números inseridos pelo jogador | — |
-| `new` | Gera um novo tabuleiro aleatório | — |
-| `complete` | Completa o tabuleiro automaticamente | — |
-| `status` | Exibe o status atual da partida | — |
-| `save arquivo.txt` | Salva a partida atual em um arquivo | `save partida.txt` |
-| `load arquivo.txt` | Carrega uma partida salva | `load partida.txt` |
-| `help` | Exibe a lista de comandos disponíveis | — |
-| `q` | Encerra o jogo | — |
+| `linha coluna valor` | Define o valor de uma célula não fixa. O parser aceita valores de 0 a 9; `0` esvazia a célula. | `3 5 7` |
+| `remove linha coluna` | Remove o valor de uma célula não fixa. | `remove 3 5` |
+| `clear` | Remove todos os valores digitados pelo usuário, mantendo células fixas. | `clear` |
+| `new` | Gera um novo puzzle com 40 células vazias. | `new` |
+| `complete` | Resolve uma cópia do tabuleiro atual e substitui o tabuleiro se houver solução. | `complete` |
+| `status` | Exibe `COMPLETO` apenas se o tabuleiro estiver cheio e válido; caso contrário exibe `INCOMPLETO`. | `status` |
+| `save arquivo.txt` | Salva a partida no formato `SUDOKU_SAVE_V1`. | `save saves/partida.txt` |
+| `load arquivo.txt` | Carrega uma partida salva no formato `SUDOKU_SAVE_V1`. | `load saves/partida.txt` |
+| `help` | Exibe a ajuda de comandos. | `help` |
+| `q` | Encerra o jogo. | `q` |
 
-> **Atenção:** células fixas (do puzzle original) não podem ser alteradas. O jogo detecta automaticamente a vitória quando o tabuleiro é preenchido corretamente.
+Células fixas são as pistas originais do puzzle e não podem ser alteradas pelo jogador. O jogo detecta vitória quando o tabuleiro está completamente preenchido e todas as linhas, colunas e caixas 3x3 são válidas.
 
----
+## Persistência
 
-## 📁 Estrutura do Projeto
+O `FileManager` salva arquivos texto em UTF-8 com este formato:
+
+```text
+SUDOKU_SAVE_V1
+valor:fixo,valor:fixo,valor:fixo,valor:fixo,valor:fixo,valor:fixo,valor:fixo,valor:fixo,valor:fixo
+...
+```
+
+Regras do formato:
+
+- primeira linha obrigatória: `SUDOKU_SAVE_V1`;
+- 9 linhas de tabuleiro após o cabeçalho;
+- 9 células por linha;
+- `valor` entre 0 e 9;
+- `fixo` igual a `1` para célula fixa ou `0` para célula editável.
+
+Ao salvar, diretórios pais são criados automaticamente. Caminhos contendo `..` são recusados para reduzir risco de path traversal. O código não limita salvamento a uma pasta específica; prefira caminhos relativos simples, como `saves/partida.txt`.
+
+## Estrutura do projeto
 
 ```text
 app/src/
 ├─ main/java/sudoku/
-│  ├─ App.java                  ← Ponto de entrada — monta o grafo de dependências
+│  ├─ App.java                  # Ponto de entrada; monta dependências
 │  ├─ logic/
-│  │  ├─ GameLogic.java         ← Regras de partida (vitória, cópia, limpeza)
-│  │  ├─ Validador.java         ← Valida linha, coluna e bloco 3x3
-│  │  ├─ Solver.java            ← Resolve o puzzle via backtracking recursivo
-│  │  └─ Generator.java         ← Gera tabuleiro completo e remove células
+│  │  ├─ GameLogic.java         # Vitória, cópia e limpeza de jogadas
+│  │  ├─ Validador.java         # Validação de linha, coluna e caixa 3x3
+│  │  ├─ Solver.java            # Solver por backtracking
+│  │  └─ Generator.java         # Geração de puzzle e remoção de células
 │  ├─ model/
-│  │  ├─ Cell.java              ← Célula com valor (0–9) e flag de fixo
-│  │  └─ Board.java             ← Matriz 9x9 com acesso e atualização
+│  │  ├─ Cell.java              # Valor e flag de célula fixa
+│  │  └─ Board.java             # Matriz 9x9 de células
 │  ├─ ui/
-│  │  ├─ ConsoleUI.java         ← Renderiza o tabuleiro, lê e interpreta comandos
-│  │  └─ GameController.java    ← Orquestra o loop principal do jogo (MVC controller)
+│  │  ├─ ConsoleUI.java         # Renderização e parser de comandos
+│  │  └─ GameController.java    # Loop principal e orquestração
 │  └─ util/
-│     ├─ CommandTypeEnum.java   ← Enum com todos os tipos de comando
-│     └─ FileManager.java       ← Salva e carrega partidas em arquivo .txt
-└─ test/java/sudoku/
-   ├─ AppTest.java
-   ├─ logic/
-   │  ├─ GameLogicTest.java
-   │  ├─ ValidadorTest.java
-   │  ├─ SolverTest.java
-   │  └─ GeneratorTest.java
-   ├─ model/
-   │  ├─ CellTest.java
-   │  └─ BoardTest.java
-   ├─ ui/
-   │  └─ ConsoleUICommandParserTest.java
-   └─ util/
-      └─ FileManagerTest.java
+│     ├─ CommandTypeEnum.java   # Tipos de comando reconhecidos
+│     └─ FileManager.java       # Persistência em arquivo texto
+└─ test/java/sudoku/            # Testes unitários JUnit 5
 ```
 
----
+## Documentação técnica
 
-## 🧪 Testes
+- [Índice da documentação](docs/README.md)
+- [Arquitetura](docs/arquitetura/README.md)
+- [Referência técnica por camada](docs/referencia/README.md)
+- [Auditorias](docs/auditorias/README.md)
 
-O projeto conta com **71 testes unitários** distribuídos em 9 suítes:
+## Licença
 
-| Suíte | Testes | O que cobre |
-|---|---|---|
-| `ValidadorTest` | 9 | Unicidade em linha, coluna e caixa; limites de índice |
-| `ConsoleUICommandParserTest` | 12 | Parsing de todos os comandos; recuperação de entradas inválidas |
-| `GameLogicTest` | 8 | Detecção de vitória; cópia de tabuleiro; limpeza de jogadas |
-| `GeneratorTest` | 6 | Contagem de células; marcação de fixos; limites; não-determinismo |
-| `SolverTest` | 5 | Resolução completa; boards parciais; board inconsistente |
-| `CellTest` | 9 | Validação de range; getters/setters; estado fixo |
-| `BoardTest` | 11 | Estado padrão; cópia profunda; referência mutável; limites de índice |
-| `FileManagerTest` | 10 | Roundtrip save/load; criação de diretórios; erros de formato; path traversal |
-| `AppTest` | 1 | Sanity check de instanciação |
+Distribuído sob a licença [MIT](LICENSE).
 
----
+## Autor
 
-## 📄 Licença
-
-Distribuído sob a licença [MIT](./LICENSE).
-
----
-
-Desenvolvido por **Allan Giaretta**.
+Allan Giaretta
